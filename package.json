@@ -1,0 +1,21 @@
+{
+  "name": "pixelfight",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "canvas": "^2.6.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "standard": "^14.3.1",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "test": "mocha",
+    "fmt": "standard --fix",
+    "make": "webpack"
+  },
+  "author": "",
+  "license": "ISC"
+}

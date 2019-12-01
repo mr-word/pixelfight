@@ -1,0 +1,16 @@
+<head>
+  <script src="dist/main.js"></script>
+  <script>
+    window.onload =()=> {
+      console.log(pixelfight)
+      const canvas = document.getElementById('screen')
+      const screen = new pixelfight.Screen(canvas);
+      const ctx = canvas.getContext('2d')
+      ctx.fillRect(0, 0, 1024, 1024);
+    }
+  </script>
+</head>
+<body>
+  <canvas id='screen' width='1024' height='1024'>
+  </canvas>
+</body>
