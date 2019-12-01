@@ -6,7 +6,9 @@
   "dependencies": {
     "bitcore-explorers": "^1.0.1",
     "bsv": "^1.0.0",
-    "dotenv": "^8.2.0"
+    "commander": "^4.0.1",
+    "dotenv": "^8.2.0",
+    "read": "^1.0.7"
   },
   "devDependencies": {
     "canvas": "^2.6.0",

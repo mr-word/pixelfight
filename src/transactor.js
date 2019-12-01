@@ -37,6 +37,7 @@ module.exports = class Transactor {
       tx.addOutput(draw)
     }
 
+    console.log('Querying network for unspent outputs, this might take a few seconds...')
     const insight = new explorer.Insight(INSIGHT_URL)
 
     insight.getUnspentUtxos(this.address, (err, res) => {

@@ -5,7 +5,7 @@ describe('transactor', () => {
   var transactor
   before(() => { transactor = Transactor.fromAddress(testAddr) })
 
-  it('buildFillOutput', () => {
+  it('buildTransaction', () => {
     const trx = transactor.buildTrx([{
       op: 'fill',
       xOff: 12,
@@ -23,7 +23,6 @@ describe('transactor', () => {
       color: 2,
       weight: 5
     }], (err, trx) => {
-      console.log(err, trx)
     })
   })
 })
