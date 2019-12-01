@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "bitcore-explorers": "^1.0.1",
+    "bsv": "^1.0.0",
+    "dotenv": "^8.2.0"
+  },
   "devDependencies": {
     "canvas": "^2.6.0",
     "chai": "^4.2.0",
