@@ -5,10 +5,12 @@
 * a pigment is a vote that a pixel should be a certain color
 * 1 pigment costs 1 satoshi, paid to a special `OP_TRUE OP_RETURN` ouput
 
+See the [announcement post](https://word.site/2019/12/01/pixelfight/) for a bit of context.
+
 ## To render the arena
 
 * The grid follows the convention that +x to the right and +y is down.
-* animated image: Each color appears with probability (w)(2^31-w) (normalized)
+* animated image: Each color with weight `w` appears with normalized probability `1 - (w)(1-w))`
 * The color with the highest probability is the one that is drawn (unless the winner is `abyss`, in which case the next color is chosen, which gives dense draws more flexibility)
 
 In other words a grid is represented as,
@@ -23,9 +25,9 @@ a grid of 16-item color-vote pairs, or,
 
 ## To draw to the arena:
 
-There are three formats for drawing. See [`Encoder`]() module for exact encoding.
+There are three formats for drawing. See [`Encoder`](https://github.com/mr-word/pixelfight/blob/master/src/encoder.js) module for exact encoding.
 
-In each one "weight" is a positive integer vote multiplier, e.g. a weight of 3 costs 3 satoshis per pixel and adds 3 pigments to each pixxl. Pigment weights *in the grid* are *signed* `i32`, and do overflow. This makes pigment value cyclical.
+In each one "weight" is a positive integer vote multiplier, e.g. a weight of 3 costs 3 satoshis per pixel and adds 3 pigments to each pixel. Pigment weights *in the grid* are *signed* `i32`, and do overflow. This makes color values cyclical.
 
 * Fill Draw: Give a position, dimension, and color 
 

@@ -18,6 +18,7 @@ module.exports = class Encoder {
       head = rest.slice(8)
       rest = rest.slice(8)
     }
+    throw new Error('unimplemented')
   }
 
   encode (op) {
@@ -49,7 +50,7 @@ module.exports = class Encoder {
       // OP_TRUE OP_RETURN 'pix' op:1 weight:4 xOff:2 yOff:2 width:2 height:2 color:1
       hex += '01' // OP_TRUE
       hex += '6a' // OP_RETURN
-      hex += '504958' // PIX (app)
+      hex += '504958' // `pix` (app)
       hex += '00' // 0 (fill operation)
       hex += op.weight.toString('16').padStart(8, '0') // 4 bytes
       hex += op.xOff.toString('16').padStart(4, '0') // 2 bytes
@@ -57,7 +58,7 @@ module.exports = class Encoder {
       hex += op.width.toString('16').padStart(4, '0') // 2 bytes
       hex += op.height.toString('16').padStart(4, '0') // 2 bytes
       // The 16-bit color is stored in the high bits.
-      hex += op.color.toString('16') + '0'
+      hex += op.color.toString('16')
       // The low bits are the 'flavor' and are ignored by the protocol. Use your imagination.
       hex += (op.flavor !== undefined ? op.flavor.toString('16') : '0')
     } else if (op.op === 'dense') {
