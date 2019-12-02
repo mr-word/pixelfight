@@ -1,3 +1,5 @@
+const want = require('chai').expect
+
 const Encoder = require('../src/encoder.js')
 
 function fail (reason, fn) {
@@ -17,7 +19,7 @@ describe('encoder', () => {
   before(() => { encoder = new Encoder() })
 
   it('encodes fillDraw', () => {
-    var data = encoder.encode({
+    let op = {
       op: 'fill',
       xOff: 12,
       yOff: 12,
@@ -25,9 +27,10 @@ describe('encoder', () => {
       height: 24,
       color: 1,
       weight: 7
-    })
-    console.log(data)
-    var op = encoder.decode(data)
+    }
+    var data = encoder.encode(op)
+    var decoded = encoder.decode(data)
+    want(op).deep.equal(decoded);
   })
 
   it('encodes fillDraw useOpFalse', () => {

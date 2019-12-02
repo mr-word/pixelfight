@@ -13,18 +13,63 @@ module.exports = class Encoder {
     if (head !== prefixFalse && head != prefixTrue) {
       throw new Error(`Invalid prefix: ${head}, pixelfight prefix is ${prefixTrue} or ${prefixFalse}`)
     }
+
     head = rest.slice(0, 2)
     rest = rest.slice(2)
     assert(head === '01', `head (${head}) === 01 (pushdata length for op byte)`)
-    console.log(head, rest)
+
     head = rest.slice(0, 2)
     rest = rest.slice(2)
+
     if (head == '00') {
       op.op = 'fill'
-      head = rest.slice(8)
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '04', `head (${head}) === 04 (pushdata length for weight)`)
+      head = rest.slice(0, 8)
       rest = rest.slice(8)
+      op.weight = parseInt(head, 16); // to u32
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '02', `head (${head}) === 02 (pushdata length for xOff)`)
+      head = rest.slice(0, 4)
+      rest = rest.slice(4)
+      op.xOff = parseInt(head, 16); // to u16 (then mod 1024 on eval)
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '02', `head (${head}) === 02 (pushdata length for yOff)`)
+      head = rest.slice(0, 4)
+      rest = rest.slice(4)
+      op.yOff = parseInt(head, 16); // to u16 (then mod 1024 on eval)
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '02', `head (${head}) === 02 (pushdata length for width)`)
+      head = rest.slice(0, 4)
+      rest = rest.slice(4)
+      op.width = parseInt(head, 16); // to u16 (equivalent to max(w,1024) on eval)
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '02', `head (${head}) === 02 (pushdata length for height)`)
+      head = rest.slice(0, 4)
+      rest = rest.slice(4)
+      op.height = parseInt(head, 16); // to u16 (equivalent to max(w,1024) on eval)
+
+      head = rest.slice(0, 2);
+      rest = rest.slice(2);
+      assert(head === '01', `head (${head}) === 01 (pushdata length for color)`)
+      head = rest.slice(0, 2)
+      rest = rest.slice(2)
+      op.color = parseInt(head, 16) / 16; // to u8 (then interpret high bits on eval)
+   
+    } else {
+      throw new Error('unimplemented')
     }
-    throw new Error('unimplemented')
+    return op
   }
 
   encode (op) {
@@ -32,7 +77,6 @@ module.exports = class Encoder {
     assert(typeof (op.xOff) === 'number', 'typeof(xOff) == number')
     assert(typeof (op.yOff) === 'number', 'typeof(yOff) == number')
     assert(typeof (op.width) === 'number', 'typeof(width) == number')
-    assert(typeof (op.weight) === 'number', 'typeof(height) == number')
     assert(typeof (op.color) === 'number', 'typeof(color) == number')
     // Recall that cumulative vote is signed i32, and overflows.
     // Adding a vote of weight 2^32 has no impact at all.
