@@ -6,10 +6,13 @@ module.exports = class Encoder {
   decode (bytes) {
     const op = {}
     // OP_TRUE OP_RETURN PIX
-    const prefix = '016a504958'
-    let head = bytes.slice(0, prefix.length)
-    let rest = bytes.slice(prefix.length)
-    if (head !== prefix) throw new Error(`Invalid prefix: ${head}, pixelfight prefix is ${prefix}`)
+    const prefixFalse = '006a504958'
+    const prefixTrue = '016a504958'
+    let head = bytes.slice(0, prefixFalse.length)
+    let rest = bytes.slice(prefixFalse.length)
+    if (head !== prefixFalse && head != prefixTrue) {
+      throw new Error(`Invalid prefix: ${head}, pixelfight prefix is ${prefixTrue} or ${prefixFalse}`)
+    }
     console.log(head, rest)
     head = rest.slice(0, 2)
     rest = rest.slice(2)
@@ -48,7 +51,11 @@ module.exports = class Encoder {
       throw new Error('op.op undefined')
     } else if (op.op === 'fill') {
       // OP_TRUE OP_RETURN 'pix' op:1 weight:4 xOff:2 yOff:2 width:2 height:2 color:1
-      hex += '01' // OP_TRUE
+      if (op.useOpFalse) {
+        hex += '00' // OP_FALSE
+      } else {
+        hex += '01' // OP_TRUE
+      }
       hex += '6a' // OP_RETURN
       hex += '504958' // `pix` (app)
       hex += '00' // 0 (fill operation)

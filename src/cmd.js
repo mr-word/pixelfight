@@ -10,6 +10,7 @@ const INSIGHT_URL = 'https://api.bitindex.network'
 
 cmd
   .option('--op <fill|dense|sparse>')
+  .option('--useOpFalse')
   .option('--weight <u32>')
   .option('--xOff <u16>')
   .option('--yOff <u16>')
@@ -18,7 +19,6 @@ cmd
   .option('--color <u8>')
   .option('--colors [u8]')
   .option('--points [(u8,u8,u8)]')
-  .option('--fromPrivKey <privkey>')
   .option('--fromAddress <privkey>')
   .parse(process.argv)
 
@@ -44,6 +44,9 @@ if (cmd.op == 'fill') {
     height: Number(cmd.height),
     color: Number(cmd.color)
   }
+  if (cmd.useOpFalse) {
+    op.useOpFalse = true;
+  }
   const hex = new Encoder().encode(op)
   console.log(`Successfully encoded output script: ${hex}`)
   const transactor = Transactor.fromAddress(cmd.fromAddress)
@@ -61,7 +64,7 @@ if (cmd.op == 'fill') {
 
 function continueToSigning (tx) {
   console.log(JSON.stringify(tx, null, 2))
-  read({ prompt: 'Sign and send this trx? (YES/no)' }, (err, a) => {
+  read({ prompt: 'Sign this trx? (YES/no)' }, (err, a) => {
     if (a == 'YES') {
       read({ prompt: 'Paste private key (will not show on screen): ', silent: true }, (err, pk) => {
         const key = bitcoin.PrivateKey(pk)
@@ -73,7 +76,7 @@ function continueToSigning (tx) {
         read({ prompt: 'Broadcast this transaction? (YES/no)' }, (err, a) => {
           if (a == 'YES') {
             const insight = new explorer.Insight(INSIGHT_URL)
-            insight.broadcast(tx, (err, res) => {
+            insight.broadcast(tx.serialize(), (err, res) => {
               console.log(err, res)
             })
           }
