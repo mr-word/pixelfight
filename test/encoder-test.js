@@ -47,6 +47,7 @@ describe('encoder', () => {
 
 
   it('decode fail bad prefix', () => {
-    fail('bad prefix', () => { encoder.decode('006d504958') })
+    fail('bad prefix', () => { encoder.decode('006ab2') })
+    fail('bad prefix, OP_TRUE is 81 == 0x51, not 0x01', () => { encoder.decode('016a01b2') })
   })
 })

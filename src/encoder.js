@@ -6,13 +6,16 @@ module.exports = class Encoder {
   decode (bytes) {
     const op = {}
     // OP_TRUE OP_RETURN PIX
-    const prefixFalse = '006a504958'
-    const prefixTrue = '016a504958'
+    const prefixFalse = '006a01b2'
+    const prefixTrue = '516a01b2'
     let head = bytes.slice(0, prefixFalse.length)
     let rest = bytes.slice(prefixFalse.length)
     if (head !== prefixFalse && head != prefixTrue) {
       throw new Error(`Invalid prefix: ${head}, pixelfight prefix is ${prefixTrue} or ${prefixFalse}`)
     }
+    head = rest.slice(0, 2)
+    rest = rest.slice(2)
+    assert(head === '01', `head (${head}) === 01 (pushdata length for op byte)`)
     console.log(head, rest)
     head = rest.slice(0, 2)
     rest = rest.slice(2)
@@ -54,17 +57,29 @@ module.exports = class Encoder {
       if (op.useOpFalse) {
         hex += '00' // OP_FALSE
       } else {
-        hex += '01' // OP_TRUE
+        hex += '51' // OP_TRUE
       }
       hex += '6a' // OP_RETURN
-      hex += '504958' // `pix` (app)
+
+      hex += '01' //
+      hex += 'b2' // magic `pix` char ASCII 178
+
+      hex += '01'
       hex += '00' // 0 (fill operation)
+
+      hex += '04'
       hex += op.weight.toString('16').padStart(8, '0') // 4 bytes
+      hex += '02'
       hex += op.xOff.toString('16').padStart(4, '0') // 2 bytes
+      hex += '02'
       hex += op.yOff.toString('16').padStart(4, '0') // 2 bytes
+      hex += '02'
       hex += op.width.toString('16').padStart(4, '0') // 2 bytes
+      hex += '02'
       hex += op.height.toString('16').padStart(4, '0') // 2 bytes
+
       // The 16-bit color is stored in the high bits.
+      hex += '01'
       hex += op.color.toString('16')
       // The low bits are the 'flavor' and are ignored by the protocol. Use your imagination.
       hex += (op.flavor !== undefined ? op.flavor.toString('16') : '0')

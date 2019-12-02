@@ -20,7 +20,7 @@ module.exports = class Transactor {
 
   constructor () {
     this.encoder = new Encoder()
-    this.feePerByte = 2
+    this.feePerByte = 1
   }
 
   buildOutput (op) {
